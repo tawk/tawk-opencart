@@ -26,10 +26,10 @@ class ControllerModuleTawkto extends Controller {
 			return;
 		}
 
-		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/tawkto/widget.tpl')) {
-			$this->template = $this->config->get('config_template') . '/template/tawkto/widget.tpl';
+		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/module/tawkto.tpl')) {
+			$this->template = $this->config->get('config_template') . '/template/module/tawkto.tpl';
 		} else {
-			$this->template = 'default/template/tawkto/widget.tpl';
+			$this->template = 'default/template/module/tawkto.tpl';
 		}
 
 		$this->data['page_id'] = $widget['page_id'];

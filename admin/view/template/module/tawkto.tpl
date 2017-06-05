@@ -9,27 +9,29 @@
 
 <?php echo $header; ?>
 
-
 <div id="content">
-  <div class="breadcrumb">
+   <div class="breadcrumb">
     <?php foreach ($breadcrumbs as $breadcrumb) { ?>
     <?php echo $breadcrumb['separator']; ?><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a>
     <?php } ?>
   </div>
   <div class="box">
     <div class="heading">
-      <h1><img src="view/image/module.png" alt="" /> <?php echo $heading_title; ?></h1>
-    </div>
-    <div class="content">
+	      <h1><img src="view/image/tawkto/tawky.png" alt="tawky" style="height : 20px;" /> <?php echo $heading_title; ?></h1>
+	 </div>
+</div>
+    <div class="content" style="position: relative;min-height: 330px;">
+    	<div id="loader" style="position: absolute; top : 50%; left : 50%; margin-top : -35px; margin-left: -35px;">
+			<img src="view/image/tawkto/loader.gif" alt="" />
+		</div>
 		<iframe
 			id="tawkIframe"
 			src=""
-			style="min-height: 300px; width : 100%; border: none">
+			style="min-height: 330px; width : 100%; border: none; display: none">
 		</iframe>
     </div>
   </div>
 </div>
-
 
 <script type="text/javascript">
 	var currentHost = window.location.protocol + '//' + window.location.host,
@@ -38,7 +40,10 @@
 		storeHierarchy = <?php echo json_encode($hierarchy) ?>;
 
 	jQuery('#tawkIframe').attr('src', url);
-
+	jQuery('#tawkIframe').load(function() {
+		$('#loader').hide();
+		$(this).show();
+	});
 	var iframe = jQuery('#tawk_widget_customization')[0];
 
 	window.addEventListener('message', function(e) {

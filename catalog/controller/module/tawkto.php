@@ -78,9 +78,10 @@ class ControllerModuleTawkto extends Controller {
                 $request_uri = substr($request_uri, 1);
             }
             $current_page = $this->config->get('config_url').$request_uri;
-
+            
             if (false==$options->always_display) {
 
+                // home
                 $is_home = false;
                 if (!isset($this->request->get['route']) 
                     || isset($this->request->get['route']) 
@@ -92,7 +93,7 @@ class ControllerModuleTawkto extends Controller {
                         return;
                     }                
                 }
-                
+
                 // category page
                 if (stripos($this->request->get['route'], 'category')!==false) {
                     if (false==$options->show_oncategory) {
@@ -100,10 +101,17 @@ class ControllerModuleTawkto extends Controller {
                     }
                 }                
                 
+                // custom pages
                 $show_pages = json_decode($options->show_oncustom);
                 $show = false;
+
+                $current_page = (string) $current_page;
                 foreach ($show_pages as $slug) {
-                    if (stripos($current_page, $slug)!==false) {
+                    $slug = (string) htmlspecialchars($slug); // we need to add htmlspecialchars due to slashes added when saving to database
+                    $slug = str_ireplace($this->config->get('config_url'), '', $slug);
+                    
+                    // $slug = urlencode($slug);
+                    if (stripos($current_page, $slug)!==false || trim($slug)==trim($current_page)) {
                         $show = true;
                         break;
                     }
@@ -112,6 +120,7 @@ class ControllerModuleTawkto extends Controller {
                 if (!$show) {
                     return;
                 }
+
             } else {
                 $hide_pages = json_decode($options->hide_oncustom);
                 $show = true;

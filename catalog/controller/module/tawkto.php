@@ -130,11 +130,13 @@ class ControllerModuleTawkto extends Controller {
                 foreach ($hide_pages as $slug) {
                     $slug = (string) htmlspecialchars($slug); // we need to add htmlspecialchars due to slashes added when saving to database
                     $slug = str_ireplace($this->config->get('config_url'), '', $slug);
-                    
-                    // $slug = urlencode($slug);
-                    if (stripos($current_page, $slug)!==false || trim($slug)==trim($current_page)) {
-                        $show = false;
-                        break;
+
+                    if (!empty($slug)) {
+                        // $slug = urlencode($slug);
+                        if (stripos($current_page, $slug)!==false || trim($slug)==trim($current_page)) {
+                            $show = false;
+                            break;
+                        }
                     }
                 }
 

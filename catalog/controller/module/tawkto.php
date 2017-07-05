@@ -68,7 +68,10 @@ class ControllerModuleTawkto extends Controller {
         }
 
         // get visibility options
-        $options = $settings['widget_visibility'];
+        $options = false;
+        if (isset($settings['widget_visibility']))
+            $options = $settings['widget_visibility'];
+        
         if ($options) {
             $options = json_decode($options);
 

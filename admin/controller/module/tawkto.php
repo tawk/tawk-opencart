@@ -238,7 +238,8 @@ class ControllerModuleTawkto extends Controller {
             'id'      => '0',
             'name'    => 'Default store',
             'current' => $this->getCurrentSettingsFor('0'),
-            'childs'  => $this->getLanguageHierarchy('0')
+            // 'childs'  => $this->getLanguageHierarchy('0')
+            'childs'  => array()
         );
 
         $stores = $this->model_setting_store->getStores();
@@ -247,7 +248,8 @@ class ControllerModuleTawkto extends Controller {
                 'id'      => $store['store_id'],
                 'name'    => $store['name'],
                 'current' => $this->getCurrentSettingsFor($store['store_id']),
-                'childs'  => $this->getLanguageHierarchy($store['store_id'])
+                // 'childs'  => $this->getLanguageHierarchy($store['store_id'])
+                'childs'  => array()
             );
         }
 

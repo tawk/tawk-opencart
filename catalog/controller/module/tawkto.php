@@ -34,6 +34,42 @@ class ControllerModuleTawkto extends Controller {
 
         $this->data['page_id'] = $widget['page_id'];
         $this->data['widget_id'] = $widget['widget_id'];
+        $this->data['current_page'] = htmlspecialchars_decode('http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+        $this->data['cart_data'] = $this->cart->getProducts();
+        $this->data['customer'] = array();
+        if (!is_null($this->customer->getId())) {
+            $customer = $this->customer;
+            $address = $this->db->query("SELECT * FROM " . DB_PREFIX . "address WHERE customer_id = '" . (int)$this->customer->getId() . "' LIMIT 1");
+
+            $country = $this->db->query("SELECT * FROM " . DB_PREFIX . "country WHERE country_id = '" . (int)$address->row['country_id'] . "' LIMIT 1");
+            $address->row['country'] = $country->row;
+            
+            $customer->address = $address->row;
+            $this->data['customer'] = $customer;
+        }
+
+        $this->data['orders'] = array();
+        $this->load->model('account/order');
+        $page = 1;
+        $results = $this->model_account_order->getOrders(($page - 1) * 10, 10);
+        if (!empty($results)) {
+            $result = current($results);
+            // foreach ($results as $result) {
+                $product_total = $this->model_account_order->getTotalOrderProductsByOrderId($result['order_id']);
+                $voucher_total = $this->model_account_order->getTotalOrderVouchersByOrderId($result['order_id']);
+
+                $this->data['orders'] = array(
+                    'order_id'   => $result['order_id'],
+                    // 'name'       => $result['firstname'] . ' ' . $result['lastname'],
+                    'status'     => $result['status'],
+                    'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+                    'products'   => ($product_total + $voucher_total),
+                    'total'      => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
+                    'href'       => htmlspecialchars_decode($this->url->link('account/order/info', 'order_id=' . $result['order_id'], 'SSL')),
+                    // 'reorder'    => $this->url->link('account/order', 'order_id=' . $result['order_id'], 'SSL')
+                );
+            // }
+        }
 
         $this->render();
     }
@@ -71,7 +107,7 @@ class ControllerModuleTawkto extends Controller {
         $options = false;
         if (isset($settings['widget_visibility']))
             $options = $settings['widget_visibility'];
-        
+
         if ($options) {
             $options = json_decode($options);
 

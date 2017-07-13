@@ -134,7 +134,7 @@ class ControllerModuleTawkto extends Controller {
                 }
 
                 // category page
-                if (stripos($this->request->get['route'], 'category')!==false) {
+                if (isset($this->request->get['route']) && stripos($this->request->get['route'], 'category')!==false) {
                     if (false==$options->show_oncategory) {
                         return;
                     }

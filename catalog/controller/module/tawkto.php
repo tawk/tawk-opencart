@@ -118,34 +118,22 @@ class ControllerModuleTawkto extends Controller {
             }
             $current_page = $this->config->get('config_url').$request_uri;
             
-            if (false==$options->always_display) {
+            if (false == $options->always_display) {
 
-                // home
-                $is_home = false;
-                if (!isset($this->request->get['route']) 
-                    || isset($this->request->get['route']) 
-                    && $this->request->get['route'] == 'common/home') {
-                    $is_home = true;
-                }
-                if ($is_home) {
-                    if (false==$options->show_onfrontpage) {
-                        return;
-                    }                
-                }
-
-                // category page
-                if (isset($this->request->get['route']) && stripos($this->request->get['route'], 'category')!==false) {
-                    if (false==$options->show_oncategory) {
-                        return;
-                    }
-                }                
-                
                 // custom pages
                 $show_pages = json_decode($options->show_oncustom);
+                if (!is_array($show_pages)) {
+                    $show_pages = trim($show_pages);
+                }
                 $show = false;
 
                 $current_page = (string) $current_page;
                 foreach ($show_pages as $slug) {
+
+                    if (empty(trim($slug))) {
+                        continue;
+                    }
+
                     $slug = (string) htmlspecialchars($slug); // we need to add htmlspecialchars due to slashes added when saving to database
                     $slug = str_ireplace($this->config->get('config_url'), '', $slug);
                     
@@ -155,6 +143,30 @@ class ControllerModuleTawkto extends Controller {
                         break;
                     }
                 }
+
+                // category page
+                if (isset($this->request->get['route']) && stripos($this->request->get['route'], 'category')!==false) {
+                    if (false != $options->show_oncategory) {
+                        $show = true;
+                    }
+                }
+
+                // home
+                $is_home = false;
+                if (!isset($this->request->get['route']) 
+                    || (isset($this->request->get['route']) && $this->request->get['route'] == 'common/home')) {
+                    $is_home = true;
+                }
+                
+                if ($is_home) {
+                    if (false != $options->show_onfrontpage) {
+                        $show = true;
+                    }                
+                }
+
+                
+                
+                
 
                 if (!$show) {
                     return;
